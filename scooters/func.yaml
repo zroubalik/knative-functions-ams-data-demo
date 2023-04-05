@@ -1,0 +1,24 @@
+specVersion: 0.35.0
+name: scooters
+runtime: go
+registry: docker.io/zroubalik
+image: docker.io/zroubalik/scooters:latest
+imageDigest: ""
+created: 2023-04-05T17:38:24.126445+02:00
+invoke: cloudevent
+build:
+  buildpacks:
+  - paketo-buildpacks/go-dist
+  - ghcr.io/boson-project/go-function-buildpack:tip
+  builder: ""
+  buildEnvs: []
+run:
+  volumes: []
+  envs: []
+deploy:
+  namespace: ""
+  remote: false
+  annotations: {}
+  options: {}
+  labels: []
+  healthEndpoints: {}
