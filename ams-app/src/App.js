@@ -76,3 +76,39 @@ function App() {
 
 export default App;
 
+
+
+// use this to send the coordinates to Knative Broker, the broker URL need to be updated before this code could work
+// untested version
+const { CloudEvent, HTTP } = require("cloudevents-sdk");
+async function emitCoordinatesEvent(latitude, longitude) {
+  // Create the CloudEvent
+  const event = new CloudEvent({
+    type: "coordinates",
+    source: "ams-app",
+    data: { latitude, longitude },
+  });
+
+  // Create the HTTP Transport binding
+  const transport = new HTTP();
+  const url = "/default"; // the URL path to the Knative broker
+
+  // Emit the CloudEvent
+  const response = await transport.emit(event, {
+    method: "POST",
+    url,
+    headers: {
+      "Content-Type": "application/cloudevents+json",
+      "Ce-Id": event.id(),
+      "Ce-Source": event.source(),
+      "Ce-Type": event.type(),
+      "Ce-Specversion": event.specversion(),
+    },
+  });
+
+  if (response.status >= 200 && response.status < 300) {
+    console.log("CloudEvent emitted successfully: ", response.status, response.statusText);
+  } else {
+    console.error("Failed to emit CloudEvent: ", response.status, response.statusText);
+  }
+}
