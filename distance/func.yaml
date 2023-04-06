@@ -1,23 +1,23 @@
-specVersion: 0.34.0
+specVersion: 0.35.0
 name: distance
 runtime: go
-registry: ""
-image: ""
-imageDigest: ""
+registry: image-registry.openshift-image-registry.svc:5000/demo
+image: image-registry.openshift-image-registry.svc:5000/demo/distance:latest
+imageDigest: sha256:062808b8ab69a9d08d5ac9fdb27ce43b15254a51654b942c19a6ba9fa50e714e
 created: 2023-04-05T19:52:13.324322+02:00
-invocation:
-  format: cloudevent
+invoke: cloudevent
 build:
   buildpacks:
   - paketo-buildpacks/go-dist
   - ghcr.io/boson-project/go-function-buildpack:tip
-  builder: ""
+  builder: pack
   buildEnvs: []
 run:
   volumes: []
   envs: []
 deploy:
-  namespace: ""
+  namespace: demo
+  remote: false
   annotations: {}
   options: {}
   labels: []

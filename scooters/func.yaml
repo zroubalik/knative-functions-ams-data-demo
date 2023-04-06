@@ -3,20 +3,20 @@ name: scooters
 runtime: go
 registry: docker.io/zroubalik
 image: docker.io/zroubalik/scooters:latest
-imageDigest: ""
+imageDigest: sha256:2994883d4b601e7568b4cc017d01b5e066b3d8516bfcfa4cba2a245a2e1fada2
 created: 2023-04-05T17:38:24.126445+02:00
 invoke: cloudevent
 build:
   buildpacks:
   - paketo-buildpacks/go-dist
   - ghcr.io/boson-project/go-function-buildpack:tip
-  builder: ""
+  builder: pack
   buildEnvs: []
 run:
   volumes: []
   envs: []
 deploy:
-  namespace: ""
+  namespace: demo
   remote: false
   annotations: {}
   options: {}

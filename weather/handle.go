@@ -28,16 +28,16 @@ type WeatherData struct {
 }
 
 func Handle(ctx context.Context, event cloudevents.Event) (*cloudevents.Event, error) {
-	// var coordinates Coordinates
-	// err := event.DataAs(&coordinates)
-	// if err != nil {
-	// 	return nil, fmt.Errorf("failed to get coordinates from event data: %v", err)
-	// }
-
-	coordinates := Coordinates{
-		Latitude:  "52.374",
-		Longitude: "4.9",
+	var coordinates Coordinates
+	err := event.DataAs(&coordinates)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get coordinates from event data: %v", err)
 	}
+
+	// coordinates := Coordinates{
+	// 	Latitude:  "52.374",
+	// 	Longitude: "4.9",
+	// }
 
 	url := fmt.Sprintf("https://api.open-meteo.com/v1/forecast?latitude=%s&longitude=%s&current_weather=true", coordinates.Latitude, coordinates.Longitude)
 	resp, err := http.Get(url)

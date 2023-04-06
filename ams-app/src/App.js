@@ -23,6 +23,7 @@ function App() {
     setSelectedResult(result);
     setQuery(result.display_name);
     setResults([]);
+    emitCoordinatesEvent(result.lat, result.lon);
   }
 
   function handleInputChange(e) {
@@ -81,6 +82,7 @@ export default App;
 // use this to send the coordinates to Knative Broker, the broker URL need to be updated before this code could work
 // untested version
 const { CloudEvent, HTTP } = require("cloudevents-sdk");
+const brokerUrl = process.env.BROKER_URI || "http://broker-ingress.knative-eventing.svc.cluster.local/demo/default"; // the URL path to the Knative broker in "demo" namespace
 async function emitCoordinatesEvent(latitude, longitude) {
   // Create the CloudEvent
   const event = new CloudEvent({
@@ -91,12 +93,11 @@ async function emitCoordinatesEvent(latitude, longitude) {
 
   // Create the HTTP Transport binding
   const transport = new HTTP();
-  const url = "/default"; // the URL path to the Knative broker
 
   // Emit the CloudEvent
   const response = await transport.emit(event, {
     method: "POST",
-    url,
+    brokerUrl,
     headers: {
       "Content-Type": "application/cloudevents+json",
       "Ce-Id": event.id(),

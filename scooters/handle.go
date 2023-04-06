@@ -18,19 +18,17 @@ type Coordinates struct {
 }
 
 type Scooter struct {
-	ID                 int       `json:"id"`
-	ScooterID          string    `json:"scooterId"`
-	StatusMotor        bool      `json:"statusMotor"`
-	Geometrie          Geometrie `json:"geometrie"`
-	Exploitant         string    `json:"exploitant"`
-	StatusBeschikbaar  bool      `json:"statusBeschikbaar"`
-	Naam               string    `json:"naam"`
-	MaxSnelheid        int       `json:"maxSnelheid"`
-	HuidigeLocatie     string    `json:"huidigeLocatie"`
-	Kenteken           string    `json:"kenteken"`
-	HelmVerplicht      bool      `json:"helmVerplicht"`
-	HelmAantalAanwezig int       `json:"helmAantalAanwezig"`
-	Distance           float64   `json:"distance"`
+	ID                 int       `json:"id"`                 // ID
+	ScooterID          string    `json:"scooterId"`          // Scooter ID
+	Geometrie          Geometrie `json:"geometrie"`          // Geometry
+	Exploitant         string    `json:"exploitant"`         // Operator
+	StatusBeschikbaar  bool      `json:"statusBeschikbaar"`  // Availability status
+	Naam               string    `json:"naam"`               // Name
+	MaxSnelheid        int       `json:"maxSnelheid"`        // Maximum speed
+	HuidigeLocatie     string    `json:"huidigeLocatie"`     // Current location
+	Kenteken           string    `json:"kenteken"`           // License plate
+	HelmAantalAanwezig int       `json:"helmAantalAanwezig"` // Number of available helmets
+	Distance           float64   `json:"distance"`           // Distance
 }
 
 type Geometrie struct {
@@ -49,21 +47,41 @@ type ScooterData struct {
 	Scooters    []Scooter   `json:"scooters"`
 }
 
-const (
-	RAIEvent = "cloudevents.io/example/receive"
-)
+type GeometryEn struct {
+	Type        string    `json:"type"`
+	Coordinates []float64 `json:"coordinates"`
+}
+
+type ScooterEn struct {
+	ID                       int        `json:"id"`
+	ScooterID                string     `json:"scooterId"`
+	Geometry                 GeometryEn `json:"geometry"`
+	Operator                 string     `json:"operator"`
+	AvailabilityStatus       bool       `json:"availabilityStatus"`
+	Name                     string     `json:"name"`
+	MaxSpeed                 int        `json:"maxSpeed"`
+	CurrentLocation          string     `json:"currentLocation"`
+	LicensePlate             string     `json:"licensePlate"`
+	NumberOfAvailableHelmets int        `json:"numberOfAvailableHelmets"`
+	Distance                 float64    `json:"distance"`
+}
+
+type ScooterDataEn struct {
+	Coordinates Coordinates `json:"coordinates"`
+	Scooters    []ScooterEn `json:"scooters"`
+}
 
 func Handle(ctx context.Context, event cloudevents.Event) (*cloudevents.Event, error) {
-	// var coordinates Coordinates
-	// err := event.DataAs(&coordinates)
-	// if err != nil {
-	// 	return nil, fmt.Errorf("failed to get coordinates from event data: %v", err)
-	// }
-
-	coordinates := Coordinates{
-		Latitude:  52.374,
-		Longitude: 4.9,
+	var coordinates Coordinates
+	err := event.DataAs(&coordinates)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get coordinates from event data: %v", err)
 	}
+
+	// coordinates := Coordinates{
+	// 	Latitude:  52.374,
+	// 	Longitude: 4.9,
+	// }
 
 	url := "https://api.data.amsterdam.nl/v1/deelmobiliteit/scooters"
 
@@ -107,9 +125,27 @@ func Handle(ctx context.Context, event cloudevents.Event) (*cloudevents.Event, e
 		closestScooters = append(closestScooters, s)
 	}
 
-	responseEventData := ScooterData{
-		Scooters:    closestScooters,
-		Coordinates: coordinates,
+	// translate the data
+	var closestScootersEn []ScooterEn
+	for _, scooter := range closestScooters {
+		closestScootersEn = append(closestScootersEn, ScooterEn{
+			ID:                       scooter.ID,
+			ScooterID:                scooter.ScooterID,
+			Geometry:                 GeometryEn(scooter.Geometrie),
+			Operator:                 scooter.Exploitant,
+			AvailabilityStatus:       scooter.StatusBeschikbaar,
+			Name:                     scooter.Naam,
+			MaxSpeed:                 scooter.MaxSnelheid,
+			CurrentLocation:          scooter.HuidigeLocatie,
+			LicensePlate:             scooter.Kenteken,
+			NumberOfAvailableHelmets: scooter.HelmAantalAanwezig,
+			Distance:                 scooter.Distance,
+		})
+	}
+
+	responseEventData := ScooterDataEn{
+		Scooters:    closestScootersEn,
+		Coordinates: Coordinates(coordinates),
 	}
 
 	// Create a new CloudEvent with the list of scooters
