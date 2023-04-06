@@ -1,0 +1,15 @@
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: trigger-weather
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: coordinates
+  subscriber:
+    ref:
+     apiVersion: serving.knative.dev/v1
+     kind: Service
+     name: weather
