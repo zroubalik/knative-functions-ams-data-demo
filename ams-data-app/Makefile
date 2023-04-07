@@ -18,9 +18,3 @@ run:
 run-images:
 	docker run -d -p 3333:3333 ${IMAGE}:backend   
 	docker run -d -p 3000:3000 ${IMAGE}:frontend 
-
-
-.PHONY: fff
-fff:
-#	docker build -f Dockerfile -t ${IMAGE}:frontendx .
-	docker push ${IMAGE}:frontendx

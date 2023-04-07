@@ -32,7 +32,7 @@ function App() {
 
     // Listen for the 'scooterData' event
     socket.on('scooterData', (data) => {
-      console.log('Received scooter data from backend server:', data);
+      console.log('Received scooters data from backend server:', data);
       setScooterData(data);
     });
 
@@ -129,13 +129,13 @@ function App() {
       {scooterData && (
         <div>
           <h2>Scooter Data</h2>
-          <ul>
+          <ol>
             {scooterData.scooters.map((scooter) => (
               <li key={scooter.id}>
-                {scooter.name} ({scooter.licensePlate}): battery level {scooter.batteryLevel}, location ({scooter.currentLocation})
+                operator: {scooter.operator}, distance (m): ({scooter.distance})
               </li>
             ))}
-          </ul>
+          </ol>
         </div>
       )}
     </div>

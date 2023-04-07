@@ -8,13 +8,15 @@ import (
 	"math"
 	"net/http"
 	"sort"
+	"strconv"
 
 	cloudevents "github.com/cloudevents/sdk-go/v2"
+	"github.com/google/uuid"
 )
 
 type Coordinates struct {
-	Latitude  float64 `json:"latitude"`
-	Longitude float64 `json:"longitude"`
+	Latitude  string `json:"latitude"`
+	Longitude string `json:"longitude"`
 }
 
 type Scooter struct {
@@ -71,20 +73,28 @@ type ScooterDataEn struct {
 	Scooters    []ScooterEn `json:"scooters"`
 }
 
+// Handle an event.
 func Handle(ctx context.Context, event cloudevents.Event) (*cloudevents.Event, error) {
+	fmt.Printf("Received data %s\n", string(event.Data()))
+
 	var coordinates Coordinates
 	err := event.DataAs(&coordinates)
 	if err != nil {
+		fmt.Printf("fail'\n")
 		return nil, fmt.Errorf("failed to get coordinates from event data: %v", err)
 	}
 
-	// coordinates := Coordinates{
-	// 	Latitude:  52.374,
-	// 	Longitude: 4.9,
-	// }
+	lat, err := strconv.ParseFloat(coordinates.Latitude, 64)
+	if err != nil {
+		return nil, fmt.Errorf("error parsing latitude %v", err)
+	}
+
+	lon, err := strconv.ParseFloat(coordinates.Longitude, 64)
+	if err != nil {
+		return nil, fmt.Errorf("error parsing longitude %v", err)
+	}
 
 	url := "https://api.data.amsterdam.nl/v1/deelmobiliteit/scooters"
-
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %v", err)
@@ -97,6 +107,8 @@ func Handle(ctx context.Context, event cloudevents.Event) (*cloudevents.Event, e
 		return nil, fmt.Errorf("failed to send request: %v", err)
 	}
 	defer resp.Body.Close()
+
+	fmt.Printf("Requested scooters data for latitude %f, longitude %f\n", lat, lon)
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -112,7 +124,7 @@ func Handle(ctx context.Context, event cloudevents.Event) (*cloudevents.Event, e
 	var availableScooters []Scooter
 	for _, s := range data.Embedded.Scooters {
 		if s.StatusBeschikbaar {
-			s.Distance = distance(coordinates.Latitude, coordinates.Longitude, s.Geometrie.Coordinates[1], s.Geometrie.Coordinates[0])
+			s.Distance = distance(lat, lon, s.Geometrie.Coordinates[1], s.Geometrie.Coordinates[0])
 			availableScooters = append(availableScooters, s)
 		}
 	}
@@ -149,16 +161,15 @@ func Handle(ctx context.Context, event cloudevents.Event) (*cloudevents.Event, e
 	}
 
 	// Create a new CloudEvent with the list of scooters
-	responseEvent := cloudevents.NewEvent(cloudevents.VersionV1)
-	responseEvent.SetType("scooters.list")
+	responseEvent := cloudevents.NewEvent()
 	responseEvent.SetSource("scooters-lister")
-	responseEvent.SetDataContentType(cloudevents.ApplicationJSON)
-
+	responseEvent.SetID(uuid.New().String())
+	responseEvent.SetType("scooters")
 	responseEvent.SetData(cloudevents.ApplicationJSON, responseEventData)
 
 	fmt.Printf("%v\n", responseEvent)
 
-	return &event, nil
+	return &responseEvent, nil
 }
 
 func distance(lat1, lon1, lat2, lon2 float64) float64 {

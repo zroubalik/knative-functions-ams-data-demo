@@ -15,6 +15,10 @@ spec:
       labels:
         app: ams-data-app
     spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       containers:
       - name: frontend
         image: quay.io/zroubalik/ams-app:frontend
@@ -24,6 +28,11 @@ spec:
         env:
           - name: REACT_APP_BACKEND_URI
             value: http://ams-data-app-api-route-demo.apps.zroubali.serverless.devcluster.openshift.com
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
       - name: backend
         imagePullPolicy: Always
         image: quay.io/zroubalik/ams-app:backend
@@ -32,6 +41,11 @@ spec:
             value: http://broker-ingress.knative-eventing.svc.cluster.local/demo/default
         ports:
         - containerPort: 3333
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
 ---
 apiVersion: v1
 kind: Service

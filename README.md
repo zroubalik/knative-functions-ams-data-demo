@@ -165,6 +165,33 @@ curl -X POST -H "Content-Type: application/json" -d '{
 }' http://localhost:3333/scooters
 
 ```
+or
+```bash
+curl -k -X POST -H "Content-Type: application/json" -d '{
+  "coordinates": {
+    "latitude": 52.370216,
+    "longitude": 4.895168
+  },
+  "current_weather": {
+    "temperature": 20,
+    "windspeed": 10,
+    "weathercode": "Sunny",
+    "time": "2023-04-06T14:25:00Z"
+  }
+}' http://localhost:3333/scooters
+```
+curl -k -X POST -H "Content-Type: application/json" -d '{
+  "coordinates": {
+    "latitude": 52.370216,
+    "longitude": 4.895168
+  },
+  "current_weather": {
+    "temperature": 20,
+    "windspeed": 10,
+    "weathercode": "Sunny",
+    "time": "2023-04-06T14:25:00Z"
+  }
+}' http://ams-data-app-service:3333/weather
 
 ## How to deploy on Openshift
 
@@ -173,7 +200,7 @@ curl -X POST -H "Content-Type: application/json" -d '{
 oc new-project demo
 ```
 
-2. in [resources/app.yaml](resources/app.yaml) edit `REACT_APP_BACKEND_URI` ENV variable to match your OpenShift hostname:
+2. In [resources/app.yaml](resources/app.yaml) edit `REACT_APP_BACKEND_URI` ENV variable to match your OpenShift hostname:
 
 ```yaml
 env:
@@ -196,4 +223,5 @@ oc apply -f resources/
 ```bash
 func deploy -p weather
 func deploy -p scooters
+func deploy -p responder
 ```

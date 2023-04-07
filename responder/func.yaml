@@ -1,10 +1,10 @@
 specVersion: 0.35.0
-name: scooters
+name: responder
 runtime: go
 registry: docker.io/zroubalik
-image: docker.io/zroubalik/scooters:latest
-imageDigest: sha256:55563c26e8195f995536a4f4153cdb2371652c2133e0584b4ad5e850ee131946
-created: 2023-04-07T22:37:36.6876+02:00
+image: docker.io/zroubalik/responder:latest
+imageDigest: sha256:d578e107286950f076663b4a2dd689ce100ca7a8c9fd88f25781e8b35c863cb5
+created: 2023-04-07T20:02:19.841592+02:00
 invoke: cloudevent
 build:
   buildpacks:
@@ -14,7 +14,9 @@ build:
   buildEnvs: []
 run:
   volumes: []
-  envs: []
+  envs:
+  - name: REACT_APP_BACKEND_URI
+    value: http://ams-data-app-api-route-demo.apps.zroubali.serverless.devcluster.openshift.com
 deploy:
   namespace: demo
   remote: false

@@ -1,0 +1,33 @@
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: trigger-responder-w
+  namespace: demo
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: weather
+  subscriber:
+    ref:
+     apiVersion: serving.knative.dev/v1
+     kind: Service
+     name: responder
+
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: trigger-responder-s
+  namespace: demo
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: scooters
+  subscriber:
+    ref:
+     apiVersion: serving.knative.dev/v1
+     kind: Service
+     name: responder
