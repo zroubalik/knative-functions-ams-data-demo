@@ -178,7 +178,8 @@ curl -k -X POST -H "Content-Type: application/json" -d '{
     "weathercode": "Sunny",
     "time": "2023-04-06T14:25:00Z"
   }
-}' http://localhost:3333/scooters
+}' http://localhost:3333/weather
+```
 
 ## How to deploy on Openshift
 
