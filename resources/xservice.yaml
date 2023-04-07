@@ -1,0 +1,17 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: multi-container
+spec:
+  template:
+    spec:
+      containers:
+        - image: quay.io/zroubalik/ams-app:backend
+          imagePullPolicy: Always
+          env:
+            - name: BROKER_URI
+              value: http://broker-ingress.knative-eventing.svc.cluster.local/demo/default
+        - image: quay.io/zroubalik/ams-app:frontend
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000

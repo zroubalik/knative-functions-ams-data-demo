@@ -3,7 +3,7 @@ name: weather
 runtime: go
 registry: docker.io/zroubalik
 image: docker.io/zroubalik/weather:latest
-imageDigest: sha256:a9c7dd374295cdd02bf3793b248db197f595c00f54a9da5e1d51f7a376591838
+imageDigest: sha256:aea5ac3eb1b9b5231417762611ca6089e8bc15a2f98d6abd8df8ab62259a6549
 created: 2023-04-05T15:21:55.374257+02:00
 invoke: cloudevent
 build:

@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:3333');
+
+const backendUrl = process.env.REACT_APP_BACKEND_URI || "http://localhost:3333"
+
+const socket = io(backendUrl, {
+  reconnection: true,
+  reconnectionDelay: 500, // Try to reconnect every 0.5 second
+  cors: {origin: backendUrl},
+});
+
 
 function App() {
   const [weatherData, setWeatherData] = useState(null);
@@ -11,20 +19,26 @@ function App() {
   const [selectedResult, setSelectedResult] = useState(null);
 
   useEffect(() => {
+    // Listen for the 'connect' event
+    socket.on('connect', () => {
+      console.log('Connected to the backend server on:', backendUrl);
+    });
+
     // Listen for the 'weatherData' event
     socket.on('weatherData', (data) => {
-      console.log('Received weather data:', data);
+      console.log('Received weather data from backend server:', data);
       setWeatherData(data);
     });
 
     // Listen for the 'scooterData' event
     socket.on('scooterData', (data) => {
-      console.log('Received scooter data:', data);
+      console.log('Received scooter data from backend server:', data);
       setScooterData(data);
     });
 
     // Clean up the event listeners
     return () => {
+      socket.off('connect')
       socket.off('weatherData');
       socket.off('scooterData');
     };
@@ -32,6 +46,7 @@ function App() {
 
   function emitCoordinatesEvent(lat, lng) {
     // Emit a 'coordinates' event to the server
+    console.log('Emitting coodinates to backend server:', lat, lng);
     socket.emit('coordinates', { lat, lng });
   }
 

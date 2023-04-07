@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ams-data-app-deployment
+  labels:
+    app: ams-data-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ams-data-app
+  template:
+    metadata:
+      labels:
+        app: ams-data-app
+    spec:
+      containers:
+      - name: frontend
+        image: quay.io/zroubalik/ams-app:frontend
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        env:
+          - name: REACT_APP_BACKEND_URI
+            value: http://ams-data-app-api-route-demo.apps.zroubali.serverless.devcluster.openshift.com
+      - name: backend
+        imagePullPolicy: Always
+        image: quay.io/zroubalik/ams-app:backend
+        env:
+          - name: BROKER_URI
+            value: http://broker-ingress.knative-eventing.svc.cluster.local/demo/default
+        ports:
+        - containerPort: 3333
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ams-data-app-service
+  labels:
+    app: ams-data-app
+spec:
+  selector:
+    app: ams-data-app
+  ports:
+  - name: http
+    port: 80
+    targetPort: 3000
+  - name: api
+    port: 3333
+    targetPort: 3333
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: ams-data-app-http-route
+  labels:
+    app: ams-data-app
+spec:
+  to:
+    name: ams-data-app-service
+    weight: 100
+  port:
+    targetPort: http
+  wildcardPolicy: None
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: ams-data-app-api-route
+  labels:
+    app: ams-data-app
+spec:
+  to:
+    name: ams-data-app-service
+    weight: 100
+  port:
+    targetPort: api
+  wildcardPolicy: None

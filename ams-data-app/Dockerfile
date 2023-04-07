@@ -1,21 +1,24 @@
-FROM node:14-alpine
+# build environment
+FROM node:16.20.0-alpine as build
 
 WORKDIR /app
 
-# Copy the package.json and package-lock.json files to the working directory
-COPY package*.json ./
+ENV PATH /app/node_modules/.bin:$PATH
 
-# Install dependencies
-RUN npm install
+# Copy package.json and package-lock.json
+COPY frontend/package*.json ./
 
-# Copy the rest of the application code to the working directory
-COPY . .
+RUN npm ci --silent
+RUN npm install react-scripts@ -g --silent
+
+COPY frontend ./
 
 RUN npm run build
 
-# Expose port 3000 for the React app and port 3333 for the backend
-EXPOSE 3000
-EXPOSE 3333
 
-# Start the application
-CMD ["npm", "start"]
+# production environment
+FROM nginxinc/nginx-unprivileged
+USER nginx
+COPY --from=build --chown=nginx:nginx /app/build /usr/share/nginx/html
+EXPOSE 8080
+CMD ["nginx", "-g", "daemon off;"]

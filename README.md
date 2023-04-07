@@ -181,3 +181,19 @@ curl -X POST -H "Content-Type: application/json" -d '{
 }' http://localhost:3333/weather
 
 ```
+
+```
+curl -k -X POST -H "Content-Type: application/json" -d '{
+  "coordinates": {
+    "latitude": 52.370216,
+    "longitude": 4.895168
+  },
+  "current_weather": {
+    "temperature": 20,
+    "windspeed": 10,
+    "weathercode": "Sunny",
+    "time": "2023-04-06T14:25:00Z"
+  }
+}' http://ams-data-app-api-route-demo.apps.zroubali.serverless.devcluster.openshift.com/weather
+```
+
