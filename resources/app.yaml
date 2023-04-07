@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ams-data-app-deployment
+  namespace: demo
   labels:
     app: ams-data-app
 spec:
@@ -36,6 +37,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ams-data-app-service
+  namespace: demo
   labels:
     app: ams-data-app
 spec:
@@ -53,6 +55,7 @@ apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: ams-data-app-http-route
+  namespace: demo
   labels:
     app: ams-data-app
 spec:
@@ -67,6 +70,7 @@ apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: ams-data-app-api-route
+  namespace: demo
   labels:
     app: ams-data-app
 spec:
