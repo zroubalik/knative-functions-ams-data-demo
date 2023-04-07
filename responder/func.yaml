@@ -1,9 +1,9 @@
 specVersion: 0.35.0
 name: responder
 runtime: go
-registry: docker.io/zroubalik
-image: docker.io/zroubalik/responder:latest
-imageDigest: sha256:d578e107286950f076663b4a2dd689ce100ca7a8c9fd88f25781e8b35c863cb5
+registry: ""
+image: ""
+imageDigest: ""
 created: 2023-04-07T20:02:19.841592+02:00
 invoke: cloudevent
 build:
@@ -14,9 +14,7 @@ build:
   buildEnvs: []
 run:
   volumes: []
-  envs:
-  - name: REACT_APP_BACKEND_URI
-    value: http://ams-data-app-api-route-demo.apps.zroubali.serverless.devcluster.openshift.com
+  envs: []
 deploy:
   namespace: demo
   remote: false
