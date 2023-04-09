@@ -1,9 +1,9 @@
 specVersion: 0.35.0
 name: weather
 runtime: go
-registry: docker.io/zroubalik
-image: docker.io/zroubalik/weather:latest
-imageDigest: sha256:a9c7dd374295cdd02bf3793b248db197f595c00f54a9da5e1d51f7a376591838
+registry: ""
+image: ""
+imageDigest: ""
 created: 2023-04-05T15:21:55.374257+02:00
 invoke: cloudevent
 build:

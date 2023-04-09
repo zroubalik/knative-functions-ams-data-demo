@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	cloudevents "github.com/cloudevents/sdk-go/v2"
+	"github.com/google/uuid"
 )
 
 type Coordinates struct {
@@ -28,16 +29,14 @@ type WeatherData struct {
 }
 
 func Handle(ctx context.Context, event cloudevents.Event) (*cloudevents.Event, error) {
+	fmt.Printf("Received data %s\n", string(event.Data()))
 	var coordinates Coordinates
 	err := event.DataAs(&coordinates)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get coordinates from event data: %v", err)
 	}
 
-	// coordinates := Coordinates{
-	// 	Latitude:  "52.374",
-	// 	Longitude: "4.9",
-	// }
+	fmt.Printf("coordinates %+v\n", coordinates)
 
 	url := fmt.Sprintf("https://api.open-meteo.com/v1/forecast?latitude=%s&longitude=%s&current_weather=true", coordinates.Latitude, coordinates.Longitude)
 	resp, err := http.Get(url)
@@ -60,9 +59,9 @@ func Handle(ctx context.Context, event cloudevents.Event) (*cloudevents.Event, e
 
 	responseEvent := cloudevents.NewEvent()
 	responseEvent.SetSource("weather-provider")
+	responseEvent.SetID(uuid.New().String())
 	responseEvent.SetType("weather")
-	responseEvent.SetDataContentType("application/json")
-	responseEvent.SetData(cloudevents.ApplicationJSON, &weatherData)
+	responseEvent.SetData(cloudevents.ApplicationJSON, weatherData)
 
 	fmt.Printf("%v\n", responseEvent)
 

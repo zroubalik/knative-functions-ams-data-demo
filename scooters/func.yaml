@@ -1,10 +1,10 @@
 specVersion: 0.35.0
 name: scooters
 runtime: go
-registry: docker.io/zroubalik
-image: docker.io/zroubalik/scooters:latest
-imageDigest: sha256:2994883d4b601e7568b4cc017d01b5e066b3d8516bfcfa4cba2a245a2e1fada2
-created: 2023-04-05T17:38:24.126445+02:00
+registry: ""
+image: ""
+imageDigest: ""
+created: 2023-04-07T22:37:36.6876+02:00
 invoke: cloudevent
 build:
   buildpacks:

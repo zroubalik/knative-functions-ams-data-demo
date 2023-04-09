@@ -1,13 +1,22 @@
 const express = require('express');
+var app = express();
 const cors = require('cors');
-const app = express();
-const http = require('http').Server(app);
-const { CloudEvent, HTTP } = require('cloudevents');
-const io = require('socket.io')(http, {
+
+app.use(cors());
+//app.use(cors({origin: 'http://localhost:3333'}));
+
+const httpServer = require('http').Server(app);
+const io = require('socket.io')(httpServer, {
   cors: {
-    origin: '*'
+    origin: "*",
+    //origin: "http://localhost:3333",
+    methods: ["PUT", "GET", "POST", "DELETE", "OPTIONS"],
+    credentials: false
   }
 });
+
+
+const { httpTransport, emitterFor, CloudEvent } = require("cloudevents");
 
 const KnativeEventingBrokerUri = process.env.BROKER_URI || 'http://broker-ingress.knative-eventing.svc.cluster.local/demo/default';
 
@@ -67,17 +76,17 @@ let scooterData = {
   ]
 };
 
-app.use(cors({
-  origin: '*'
-}));
-app.options('*', cors()); // Enable pre-flight requests for all routes
-
 app.use(express.json());
+//app.options('*', cors()); // Enable pre-flight requests for all routes
+app.use(cors());
+//app.use(cors({origin: '*'}));
 
 // API endpoint for receiving weather data
 app.post('/weather', (req, res) => {
   // Parse the weather data from the request
   const incomingWeatherData = req.body;
+
+  console.log(`Received weather data!`);
 
   // Only update the weather data if the incoming data is valid
   if (incomingWeatherData && typeof incomingWeatherData === 'object') {
@@ -97,6 +106,8 @@ app.post('/scooters', (req, res) => {
   // Parse the scooter data from the request
   const incomingScooterData = req.body;
 
+  console.log(`Received scooter data!`);
+
   // Only update the scooter data if the incoming data is valid
   if (incomingScooterData && typeof incomingScooterData === 'object') {
     scooterData = incomingScooterData;
@@ -108,14 +119,6 @@ app.post('/scooters', (req, res) => {
   } else {
     res.sendStatus(400);
   }
-});
-
-// Serve the client build folder
-app.use(express.static('client/build'));
-
-// Catch-all route for serving the client app
-app.get('*', (req, res) => {
-  res.sendFile(__dirname + '/client/build/index.html');
 });
 
 // Receive coordinates event
@@ -133,15 +136,12 @@ io.on('connection', (socket) => {
       }
     });
 
-    // Create the HTTP Transport binding and set the target URL
-    const transport = new HTTP({
-      url: KnativeEventingBrokerUri
-    });
+    const emit = emitterFor(httpTransport(KnativeEventingBrokerUri));
 
     // Emit the CloudEvent to the target URL
-    transport.send(ce)
+    emit(ce)
       .then(response => {
-        console.log(`CloudEvent emitted with status code: ${response.statusCode}`);
+        console.log(`CloudEvent emitted!`);
       })
       .catch(error => {
         console.error('Error sending CloudEvent:', error);
@@ -151,6 +151,6 @@ io.on('connection', (socket) => {
 
 // Start the server
 const port = process.env.PORT || 3333;
-http.listen(port, () => {
+httpServer.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });

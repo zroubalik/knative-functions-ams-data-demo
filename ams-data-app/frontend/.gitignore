@@ -1,5 +1,5 @@
 out
-node_modules
+frontend/node_modules
 .vscode-test/
 test/fixtures/workspace/.vscode/
 *.vsix
@@ -9,3 +9,4 @@ cache
 dist/
 public/
 test-resources/
+

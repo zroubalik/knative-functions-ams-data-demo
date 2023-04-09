@@ -165,9 +165,9 @@ curl -X POST -H "Content-Type: application/json" -d '{
 }' http://localhost:3333/scooters
 
 ```
-
+or
 ```bash
-curl -X POST -H "Content-Type: application/json" -d '{
+curl -k -X POST -H "Content-Type: application/json" -d '{
   "coordinates": {
     "latitude": 52.370216,
     "longitude": 4.895168
@@ -179,5 +179,37 @@ curl -X POST -H "Content-Type: application/json" -d '{
     "time": "2023-04-06T14:25:00Z"
   }
 }' http://localhost:3333/weather
+```
 
+## How to deploy on Openshift
+
+1. Create namespace `demo`
+```bash
+oc new-project demo
+```
+
+2. In [resources/app.yaml](resources/app.yaml) edit `REACT_APP_BACKEND_URI` ENV variable to match your OpenShift hostname:
+
+```yaml
+env:
+  - name: REACT_APP_BACKEND_URI
+    value: http://ams-data-app-api-route-demo.apps.<HOSTNAME>
+```
+for example:
+```yaml
+env:
+  - name: REACT_APP_BACKEND_URI
+    value: http://ams-data-app-api-route-demo.apps.zroubali.serverless.devcluster.openshift.com
+```
+
+3. Deploy resources
+```bash
+oc apply -f resources/
+```
+
+4. Deploy functions
+```bash
+func deploy -p weather
+func deploy -p scooters
+func deploy -p responder
 ```
