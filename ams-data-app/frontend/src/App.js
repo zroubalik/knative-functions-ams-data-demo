@@ -134,9 +134,13 @@ function App() {
     setQuery('');
     setResults([]);
     setSelectedResult(null);
+    setWeatherData(null);
+    setScooterData(null);
   }
 
   function handleSelect(result) {
+    setWeatherData(null);
+    setScooterData(null);
     setSelectedResult(result);
     setQuery(result.display_name);
     setResults([]);
@@ -264,9 +268,9 @@ function App() {
                     <TableBody>
                         <StyledTableRow>
                           <StyledTableCell component="th" scope="row">
-                            {weatherData.current_weather.temperature}
+                            {weatherData.current_weather.temperature + " °C"}
                           </StyledTableCell>
-                          <StyledTableCell align="right">{weatherData.current_weather.windspeed}</StyledTableCell>
+                          <StyledTableCell align="right">{weatherData.current_weather.windspeed + " m/s"}</StyledTableCell>
                         </StyledTableRow>
                     </TableBody>
                   </Table>
@@ -285,11 +289,13 @@ function App() {
                     <TableBody>
                     {scooterData.scooters.map((scooter) => (
                         <StyledTableRow>
-                          <StyledTableCell component="th" scope="row">
-                            Operator: {scooter.name} | License: {scooter.licensePlate}
-                          </StyledTableCell>
+                          <StyledTableCell component="th" scope="row">Operator: {scooter.operator}</StyledTableCell>
                           <StyledTableCell align="right">{scooter.numberOfAvailableHelmets}</StyledTableCell>
-                          <StyledTableCell align="right">{scooter.distance} metres</StyledTableCell>
+                          <StyledTableCell align="right">
+                          {scooter.distance >= 1000
+                              ? (scooter.distance / 1000).toFixed(2) + " km"
+                              : scooter.distance.toFixed(0) + " m"}
+                          </StyledTableCell>
                         </StyledTableRow>
                       ))}
                     </TableBody>
