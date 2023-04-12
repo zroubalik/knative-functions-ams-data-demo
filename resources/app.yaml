@@ -36,9 +36,6 @@ spec:
       - name: backend
         imagePullPolicy: Always
         image: quay.io/zroubalik/ams-app:backend
-        env:
-          - name: BROKER_URI
-            value: http://broker-ingress.knative-eventing.svc.cluster.local/demo/default
         ports:
         - containerPort: 3333
         securityContext:

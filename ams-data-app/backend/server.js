@@ -18,7 +18,8 @@ const io = require('socket.io')(httpServer, {
 
 const { httpTransport, emitterFor, CloudEvent } = require("cloudevents");
 
-const KnativeEventingBrokerUri = process.env.BROKER_URI || 'http://broker-ingress.knative-eventing.svc.cluster.local/demo/default';
+// Get Knative Broker URI from SinkBinding
+const KnativeEventingBrokerUri = process.env.K_SINK || 'http://broker-ingress.knative-eventing.svc.cluster.local/demo/default';
 
 // Example weather data
 let weatherData = {
