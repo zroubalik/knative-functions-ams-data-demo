@@ -3,16 +3,15 @@ var app = express();
 const cors = require('cors');
 
 app.use(cors());
-//app.use(cors({origin: 'http://localhost:3333'}));
 
 const httpServer = require('http').Server(app);
 const io = require('socket.io')(httpServer, {
-  cors: {
-    origin: "*",
-    //origin: "http://localhost:3333",
-    methods: ["PUT", "GET", "POST", "DELETE", "OPTIONS"],
-    credentials: false
-  }
+  cors: cors()
+  // cors: {
+  //   origin: "*",
+  //   methods: ["PUT", "GET", "POST", "DELETE", "OPTIONS"],
+  //   credentials: false
+  // }
 });
 
 

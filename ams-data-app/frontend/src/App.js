@@ -22,6 +22,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import background from "./img/knative-scooter.png";
 
 
 const backendUrl = process.env.REACT_APP_BACKEND_URI || "http://localhost:3333"
@@ -29,7 +30,6 @@ const backendUrl = process.env.REACT_APP_BACKEND_URI || "http://localhost:3333"
 const socket = io(backendUrl, {
   reconnection: true,
   reconnectionDelay: 500, // Try to reconnect every 0.5 second
-  cors: {origin: backendUrl},
 });
 
 
@@ -174,7 +174,7 @@ function App() {
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     opacity: '0.7',
-                    backgroundImage: "url(https://images.unsplash.com/photo-1598025903112-f579d7eb72aa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80)"
+                    backgroundImage: `url(${background})`
               }}>
           <div className={styles.row}>
             <div>
