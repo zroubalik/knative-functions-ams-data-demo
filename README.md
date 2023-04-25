@@ -4,6 +4,8 @@
 
 The architecture is following:
 
+![Application architecture diagram](app-architecture.png)
+
 1. [ams-data-app](ams-data-app) - React app that servers UI and provides HTTP endpoints to read input data and update UI accordingly. Users should specify address in Amsterdam, the app should obtain Coordinates (Latitude and Longitude). This coordinates will be used by several functions that provide some data based on the coordinates.
 2. [weather](weather) - Function that accepts a cloudevent that should contain coordinates and returns weather data, this is the example json:
 
