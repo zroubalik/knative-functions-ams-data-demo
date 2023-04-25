@@ -1,24 +1,12 @@
 specVersion: 0.35.0
 name: responder
-runtime: go
+runtime: node
 registry: ""
 image: ""
 imageDigest: ""
-created: 2023-04-07T20:02:19.841592+02:00
+created: 2023-04-20T09:42:55.307479+02:00
 invoke: cloudevent
 build:
-  buildpacks:
-  - paketo-buildpacks/go-dist
-  - ghcr.io/boson-project/go-function-buildpack:tip
   builder: pack
-  buildEnvs: []
-run:
-  volumes: []
-  envs: []
 deploy:
   namespace: demo
-  remote: false
-  annotations: {}
-  options: {}
-  labels: []
-  healthEndpoints: {}

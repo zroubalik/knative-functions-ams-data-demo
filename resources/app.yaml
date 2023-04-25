@@ -72,7 +72,6 @@ metadata:
 spec:
   to:
     name: ams-data-app-service
-    weight: 100
   port:
     targetPort: http
   wildcardPolicy: None
@@ -87,7 +86,6 @@ metadata:
 spec:
   to:
     name: ams-data-app-service
-    weight: 100
   port:
     targetPort: api
   wildcardPolicy: None
