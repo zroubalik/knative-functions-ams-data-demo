@@ -1,4 +1,4 @@
-# KubeCon Europe 2023 Demo
+# Knative Functions in action: Amsterdam City Data App
 
 ## Components:
 
