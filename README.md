@@ -72,7 +72,7 @@ This JSON represents the WeatherData struct with a latitude of 40.7128 and a lon
 
 This JSON represents the ScooterData struct with a set of two scooters located in Amsterdam. The first scooter is available and has a current location of 0.5 kilometers from the specified coordinates. The second scooter has a current location of 1.2 kilometers from the specified coordinates.
 
-4. (not used int he React app at the moment) [distance](distance) - Function that accepts a list of scooters as a cloudevent (a return value from Function `scooters`). And for each scooter calculates walking distance and travel time between the input coordinates and the scooter's location. Example output:
+4. (💡 **not used in the React app at the moment**) [distance](distance) - Function that accepts a list of scooters as a cloudevent (a return value from Function `scooters`). And for each scooter calculates walking distance and travel time between the input coordinates and the scooter's location. Example output:
 
 ```json
 {
