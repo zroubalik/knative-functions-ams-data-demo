@@ -1,0 +1,1 @@
+{"ast":null,"code":"export function on(obj, ev, fn) {\n  obj.on(ev, fn);\n  return function subDestroy() {\n    obj.off(ev, fn);\n  };\n}","map":null,"metadata":{},"sourceType":"module"}
