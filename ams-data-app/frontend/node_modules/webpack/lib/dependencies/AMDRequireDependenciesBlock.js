@@ -36,12 +36,8 @@ module.exports = class AMDRequireDependenciesBlock extends AsyncDependenciesBloc
 		} else {
 			this.range = expr.range;
 		}
-		const dep = this.newRequireDependency();
+		const dep = new AMDRequireDependency(this);
 		dep.loc = loc;
 		this.addDependency(dep);
-	}
-
-	newRequireDependency() {
-		return new AMDRequireDependency(this);
 	}
 };

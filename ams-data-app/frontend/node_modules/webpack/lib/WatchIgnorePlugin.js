@@ -7,8 +7,6 @@
 const validateOptions = require("schema-utils");
 const schema = require("../schemas/plugins/WatchIgnorePlugin.json");
 
-/** @typedef {import("../declarations/plugins/WatchIgnorePlugin").WatchIgnorePluginOptions} WatchIgnorePluginOptions */
-
 class IgnoringWatchFileSystem {
 	constructor(wfs, paths) {
 		this.wfs = wfs;
@@ -17,8 +15,8 @@ class IgnoringWatchFileSystem {
 
 	watch(files, dirs, missing, startTime, options, callback, callbackUndelayed) {
 		const ignored = path =>
-			this.paths.some(p =>
-				p instanceof RegExp ? p.test(path) : path.indexOf(p) === 0
+			this.paths.some(
+				p => (p instanceof RegExp ? p.test(path) : path.indexOf(p) === 0)
 			);
 
 		const notIgnored = path => !ignored(path);
@@ -38,10 +36,10 @@ class IgnoringWatchFileSystem {
 				dirsModified,
 				missingModified,
 				fileTimestamps,
-				dirTimestamps,
-				removedFiles
+				dirTimestamps
 			) => {
 				if (err) return callback(err);
+
 				for (const path of ignoredFiles) {
 					fileTimestamps.set(path, 1);
 				}
@@ -56,8 +54,7 @@ class IgnoringWatchFileSystem {
 					dirsModified,
 					missingModified,
 					fileTimestamps,
-					dirTimestamps,
-					removedFiles
+					dirTimestamps
 				);
 			},
 			callbackUndelayed
@@ -85,9 +82,6 @@ class IgnoringWatchFileSystem {
 }
 
 class WatchIgnorePlugin {
-	/**
-	 * @param {WatchIgnorePluginOptions} paths list of paths
-	 */
 	constructor(paths) {
 		validateOptions(schema, paths, "Watch Ignore Plugin");
 		this.paths = paths;

@@ -61,8 +61,7 @@ class RequireResolveDependencyParserPlugin {
 				options,
 				{
 					mode: weak ? "weak" : "sync"
-				},
-				parser
+				}
 			);
 			if (!dep) return;
 			dep.loc = expr.loc;

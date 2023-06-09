@@ -78,11 +78,10 @@ class WebAssemblyJavascriptGenerator extends Generator {
 					importData.names.add(dep.name);
 					const usedName = module.isUsed(dep.exportName);
 					if (usedName) {
-						const exportProp = `${module.exportsArgument}[${JSON.stringify(
-							usedName
-						)}]`;
 						const defineStatement = Template.asString([
-							`${exportProp} = ${runtimeTemplate.exportFromImport({
+							`${module.exportsArgument}[${JSON.stringify(
+								usedName
+							)}] = ${runtimeTemplate.exportFromImport({
 								module: dep.module,
 								request: dep.request,
 								importVar: importData.importVar,
@@ -91,11 +90,7 @@ class WebAssemblyJavascriptGenerator extends Generator {
 								asiSafe: true,
 								isCall: false,
 								callContext: null
-							})};`,
-							`if(WebAssembly.Global) ${exportProp} = ` +
-								`new WebAssembly.Global({ value: ${JSON.stringify(
-									dep.valueType
-								)} }, ${exportProp});`
+							})};`
 						]);
 						importData.reexports.push(defineStatement);
 						needExportsCopy = true;

@@ -11,14 +11,5 @@ build:
   - paketo-buildpacks/go-dist
   - ghcr.io/boson-project/go-function-buildpack:tip
   builder: pack
-  buildEnvs: []
-run:
-  volumes: []
-  envs: []
 deploy:
   namespace: demo
-  remote: false
-  annotations: {}
-  options: {}
-  labels: []
-  healthEndpoints: {}

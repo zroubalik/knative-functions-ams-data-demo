@@ -10,24 +10,13 @@ const Template = require("./Template");
 
 /** @typedef {import("./Compilation")} Compilation */
 
-/**
- * @typedef {Object} AmdMainTemplatePluginOptions
- * @param {string=} name the library name
- * @property {boolean=} requireAsWrapper
- */
-
 class AmdMainTemplatePlugin {
 	/**
-	 * @param {AmdMainTemplatePluginOptions} options the plugin options
+	 * @param {string} name the library name
 	 */
-	constructor(options) {
-		if (!options || typeof options === "string") {
-			this.name = options;
-			this.requireAsWrapper = false;
-		} else {
-			this.name = options.name;
-			this.requireAsWrapper = options.requireAsWrapper;
-		}
+	constructor(name) {
+		/** @type {string} */
+		this.name = name;
 	}
 
 	/**
@@ -40,8 +29,8 @@ class AmdMainTemplatePlugin {
 		const onRenderWithEntry = (source, chunk, hash) => {
 			const externals = chunk.getModules().filter(m => m.external);
 			const externalsDepsArray = JSON.stringify(
-				externals.map(m =>
-					typeof m.request === "object" ? m.request.amd : m.request
+				externals.map(
+					m => (typeof m.request === "object" ? m.request.amd : m.request)
 				)
 			);
 			const externalsArguments = externals
@@ -50,13 +39,7 @@ class AmdMainTemplatePlugin {
 				)
 				.join(", ");
 
-			if (this.requireAsWrapper) {
-				return new ConcatSource(
-					`require(${externalsDepsArray}, function(${externalsArguments}) { return `,
-					source,
-					"});"
-				);
-			} else if (this.name) {
+			if (this.name) {
 				const name = mainTemplate.getAssetPath(this.name, {
 					hash,
 					chunk
@@ -96,9 +79,7 @@ class AmdMainTemplatePlugin {
 
 		mainTemplate.hooks.hash.tap("AmdMainTemplatePlugin", hash => {
 			hash.update("exports amd");
-			if (this.name) {
-				hash.update(this.name);
-			}
+			hash.update(this.name);
 		});
 	}
 }

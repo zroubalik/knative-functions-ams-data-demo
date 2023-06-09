@@ -136,9 +136,7 @@ class AMDDefineDependencyParserPlugin {
 			param.range,
 			param,
 			expr,
-			this.options,
-			{},
-			parser
+			this.options
 		);
 		if (!dep) return;
 		dep.loc = expr.loc;

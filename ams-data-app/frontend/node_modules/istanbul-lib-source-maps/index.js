@@ -2,14 +2,16 @@
  Copyright 2012-2015, Yahoo Inc.
  Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
  */
-'use strict';
+"use strict";
 
-const { MapStore } = require('./lib/map-store');
+var MapStore = require('./lib/map-store').MapStore;
 /**
  * @module Exports
  */
 module.exports = {
-    createSourceMapStore(opts) {
+    createSourceMapStore: function (opts) {
         return new MapStore(opts);
     }
 };
+
+

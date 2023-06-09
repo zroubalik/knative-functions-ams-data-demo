@@ -1,35 +1,29 @@
 {
-  "title": "IgnorePluginOptions",
+  "type": "object",
   "oneOf": [
     {
-      "type": "object",
       "additionalProperties": false,
       "properties": {
-        "contextRegExp": {
-          "description": "A RegExp to test the context (directory) against",
-          "instanceof": "RegExp",
-          "tsType": "RegExp"
-        },
         "resourceRegExp": {
           "description": "A RegExp to test the request against",
-          "instanceof": "RegExp",
-          "tsType": "RegExp"
+          "instanceof": "RegExp"
+        },
+        "contextRegExp": {
+          "description": "A RegExp to test the context (directory) against",
+          "instanceof": "RegExp"
         }
       }
     },
     {
-      "type": "object",
       "additionalProperties": false,
       "properties": {
+        "checkResource": {
+          "description": "A filter function for resource",
+          "instanceof": "Function"
+        },
         "checkContext": {
           "description": "A filter function for context",
-          "instanceof": "Function",
-          "tsType": "((context: string) => boolean)"
-        },
-        "checkResource": {
-          "description": "A filter function for resource and context",
-          "instanceof": "Function",
-          "tsType": "((resource: string, context: string) => boolean)"
+          "instanceof": "Function"
         }
       }
     }

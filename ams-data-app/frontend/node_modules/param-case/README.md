@@ -2,9 +2,12 @@
 
 [![NPM version][npm-image]][npm-url]
 [![NPM downloads][downloads-image]][downloads-url]
-[![Bundle size][bundlephobia-image]][bundlephobia-url]
+[![Build status][travis-image]][travis-url]
+[![Test coverage][coveralls-image]][coveralls-url]
 
-> Transform into a lower cased string with dashes between words.
+Param case a string.
+
+Supports Unicode (non-ASCII characters) and non-string entities, such as objects with a `toString` property, numbers and booleans. Empty values (`null` and `undefined`) will result in an empty string.
 
 ## Installation
 
@@ -14,16 +17,19 @@ npm install param-case --save
 
 ## Usage
 
-```js
-import { paramCase } from "param-case";
+```javascript
+var paramCase = require('param-case')
 
-paramCase("string"); //=> "string"
-paramCase("dot.case"); //=> "dot-case"
-paramCase("PascalCase"); //=> "pascal-case"
-paramCase("version 1.2.10"); //=> "version-1-2-10"
+paramCase('string')        //=> "string"
+paramCase('camelCase')     //=> "camel-case"
+paramCase('sentence case') //=> "sentence-case"
+
+paramCase('MY STRING', 'tr') //=> "my-strıng"
 ```
 
-The function also accepts [`options`](https://github.com/blakeembrey/change-case#options).
+## Typings
+
+Includes a [TypeScript definition](param-case.d.ts).
 
 ## License
 
@@ -33,5 +39,7 @@ MIT
 [npm-url]: https://npmjs.org/package/param-case
 [downloads-image]: https://img.shields.io/npm/dm/param-case.svg?style=flat
 [downloads-url]: https://npmjs.org/package/param-case
-[bundlephobia-image]: https://img.shields.io/bundlephobia/minzip/param-case.svg
-[bundlephobia-url]: https://bundlephobia.com/result?p=param-case
+[travis-image]: https://img.shields.io/travis/blakeembrey/param-case.svg?style=flat
+[travis-url]: https://travis-ci.org/blakeembrey/param-case
+[coveralls-image]: https://img.shields.io/coveralls/blakeembrey/param-case.svg?style=flat
+[coveralls-url]: https://coveralls.io/r/blakeembrey/param-case?branch=master

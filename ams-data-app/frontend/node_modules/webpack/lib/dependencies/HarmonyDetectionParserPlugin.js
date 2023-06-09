@@ -13,13 +13,9 @@ module.exports = class HarmonyDetectionParserPlugin {
 			const isStrictHarmony = parser.state.module.type === "javascript/esm";
 			const isHarmony =
 				isStrictHarmony ||
-				ast.body.some(
-					statement =>
-						statement.type === "ImportDeclaration" ||
-						statement.type === "ExportDefaultDeclaration" ||
-						statement.type === "ExportNamedDeclaration" ||
-						statement.type === "ExportAllDeclaration"
-				);
+				ast.body.some(statement => {
+					return /^(Import|Export).*Declaration$/.test(statement.type);
+				});
 			if (isHarmony) {
 				const module = parser.state.module;
 				const compatDep = new HarmonyCompatibilityDependency(module);

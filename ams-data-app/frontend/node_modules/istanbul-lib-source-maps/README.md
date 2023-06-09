@@ -1,4 +1,5 @@
-# istanbul-lib-source-maps
+istanbul-lib-source-maps
+========================
 
 [![Build Status](https://travis-ci.org/istanbuljs/istanbuljs.svg?branch=master)](https://travis-ci.org/istanbuljs/istanbuljs)
 

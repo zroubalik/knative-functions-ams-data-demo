@@ -9,6 +9,8 @@
         "build": "cd frontend && npm run build"
     },
     "dependencies": {
-        "concurrently": "^6.5.1"
+        "@jridgewell/trace-mapping": "^0.3.18",
+        "concurrently": "^6.5.1",
+        "sourcemap-codec": "^1.4.8"
     }
 }

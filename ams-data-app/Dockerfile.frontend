@@ -14,7 +14,6 @@ USER 1000
 RUN npm install
 
 COPY --chown=node:node frontend /home/node/app
-RUN chmod 666 /home/node/app/node_modules/.cache/.eslintcache
 
 EXPOSE 3000
 CMD ["npm", "start"]

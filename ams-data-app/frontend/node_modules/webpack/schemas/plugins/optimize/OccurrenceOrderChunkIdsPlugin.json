@@ -1,7 +1,6 @@
 {
-  "title": "OccurrenceOrderChunkIdsPluginOptions",
-  "type": "object",
   "additionalProperties": false,
+  "type": "object",
   "properties": {
     "prioritiseInitial": {
       "description": "Prioritise initial size over total size",

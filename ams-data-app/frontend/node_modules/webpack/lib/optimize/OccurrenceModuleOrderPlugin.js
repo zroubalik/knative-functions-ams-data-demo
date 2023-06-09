@@ -7,12 +7,7 @@
 const validateOptions = require("schema-utils");
 const schema = require("../../schemas/plugins/optimize/OccurrenceOrderModuleIdsPlugin.json");
 
-/** @typedef {import("../../declarations/plugins/optimize/OccurrenceOrderModuleIdsPlugin").OccurrenceOrderModuleIdsPluginOptions} OccurrenceOrderModuleIdsPluginOptions */
-
 class OccurrenceOrderModuleIdsPlugin {
-	/**
-	 * @param {OccurrenceOrderModuleIdsPluginOptions=} options options object
-	 */
 	constructor(options = {}) {
 		validateOptions(schema, options, "Occurrence Order Module Ids Plugin");
 		this.options = options;
@@ -46,11 +41,7 @@ class OccurrenceOrderModuleIdsPlugin {
 							if (!r.module) {
 								return sum;
 							}
-							const count = initialChunkChunkMap.get(r.module);
-							if (!count) {
-								return sum;
-							}
-							return sum + count;
+							return sum + initialChunkChunkMap.get(r.module);
 						};
 						const countOccurs = (sum, r) => {
 							if (!r.module) {

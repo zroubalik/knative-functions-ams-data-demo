@@ -9,8 +9,6 @@ const { intersect } = require("../util/SetHelpers");
 const validateOptions = require("schema-utils");
 const schema = require("../../schemas/plugins/optimize/AggressiveSplittingPlugin.json");
 
-/** @typedef {import("../../declarations/plugins/optimize/AggressiveSplittingPlugin").AggressiveSplittingPluginOptions} AggressiveSplittingPluginOptions */
-
 const moveModuleBetween = (oldChunk, newChunk) => {
 	return module => {
 		oldChunk.moveModule(module, newChunk);
@@ -24,15 +22,10 @@ const isNotAEntryModule = entryModule => {
 };
 
 class AggressiveSplittingPlugin {
-	/**
-	 * @param {AggressiveSplittingPluginOptions=} options options object
-	 */
 	constructor(options) {
-		if (!options) options = {};
+		validateOptions(schema, options || {}, "Aggressive Splitting Plugin");
 
-		validateOptions(schema, options, "Aggressive Splitting Plugin");
-
-		this.options = options;
+		this.options = options || {};
 		if (typeof this.options.minSize !== "number") {
 			this.options.minSize = 30 * 1024;
 		}

@@ -35,9 +35,7 @@ class CommonJsRequireDependencyParserPlugin {
 				expr.range,
 				param,
 				expr,
-				options,
-				{},
-				parser
+				options
 			);
 			if (!dep) return;
 			dep.loc = expr.loc;

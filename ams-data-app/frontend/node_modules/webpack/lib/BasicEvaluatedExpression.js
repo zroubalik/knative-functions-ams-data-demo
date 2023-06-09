@@ -29,14 +29,11 @@ class BasicEvaluatedExpression {
 		this.regExp = null;
 		this.string = null;
 		this.quasis = null;
-		this.parts = null;
 		this.array = null;
 		this.items = null;
 		this.options = null;
 		this.prefix = null;
 		this.postfix = null;
-		this.wrappedInnerExpressions = null;
-		this.expression = null;
 	}
 
 	isNull() {
@@ -108,36 +105,10 @@ class BasicEvaluatedExpression {
 				: undefined;
 		}
 		if (this.isTemplateString()) {
-			const str = this.asString();
-			if (typeof str === "string") return str !== "";
-		}
-		return undefined;
-	}
-
-	asString() {
-		if (this.isBoolean()) return `${this.bool}`;
-		if (this.isNull()) return "null";
-		if (this.isString()) return this.string;
-		if (this.isNumber()) return `${this.number}`;
-		if (this.isRegExp()) return `${this.regExp}`;
-		if (this.isArray()) {
-			let array = [];
-			for (const item of this.items) {
-				const itemStr = item.asString();
-				if (itemStr === undefined) return undefined;
-				array.push(itemStr);
+			for (const quasi of this.quasis) {
+				if (quasi.asBool()) return true;
 			}
-			return `${array}`;
-		}
-		if (this.isConstArray()) return `${this.array}`;
-		if (this.isTemplateString()) {
-			let str = "";
-			for (const part of this.parts) {
-				const partStr = part.asString();
-				if (partStr === undefined) return undefined;
-				str += partStr;
-			}
-			return str;
+			// can't tell if string will be empty without executing
 		}
 		return undefined;
 	}
@@ -177,11 +148,10 @@ class BasicEvaluatedExpression {
 		return this;
 	}
 
-	setWrapped(prefix, postfix, innerExpressions) {
+	setWrapped(prefix, postfix) {
 		this.type = TypeWrapped;
 		this.prefix = prefix;
 		this.postfix = postfix;
-		this.wrappedInnerExpressions = innerExpressions;
 		return this;
 	}
 
@@ -214,11 +184,9 @@ class BasicEvaluatedExpression {
 		return this;
 	}
 
-	setTemplateString(quasis, parts, kind) {
+	setTemplateString(quasis) {
 		this.type = TypeTemplateString;
 		this.quasis = quasis;
-		this.parts = parts;
-		this.templateStringKind = kind;
 		return this;
 	}
 
@@ -236,11 +204,6 @@ class BasicEvaluatedExpression {
 
 	setRange(range) {
 		this.range = range;
-		return this;
-	}
-
-	setExpression(expression) {
-		this.expression = expression;
 		return this;
 	}
 }

@@ -7,7 +7,6 @@
 const { ConcatSource, OriginalSource } = require("webpack-sources");
 const Template = require("./Template");
 
-/** @typedef {import("../declarations/WebpackOptions").LibraryCustomUmdObject} LibraryCustomUmdObject */
 /** @typedef {import("./Compilation")} Compilation */
 
 /**
@@ -39,7 +38,7 @@ const accessorAccess = (base, accessor, joinWith = ", ") => {
 		.join(joinWith);
 };
 
-/** @typedef {string | string[] | LibraryCustomUmdObject} UmdMainTemplatePluginName */
+/** @typedef {string | string[] | Record<string, string | string[]>} UmdMainTemplatePluginName */
 
 /**
  * @typedef {Object} AuxiliaryCommentObject
@@ -236,12 +235,12 @@ class UmdMainTemplatePlugin {
 								  amdFactory +
 								  ");\n"
 							: this.names.amd && this.namedDefine === true
-							? "		define(" +
-							  libraryName(this.names.amd) +
-							  ", [], " +
-							  amdFactory +
-							  ");\n"
-							: "		define([], " + amdFactory + ");\n") +
+								? "		define(" +
+								  libraryName(this.names.amd) +
+								  ", [], " +
+								  amdFactory +
+								  ");\n"
+								: "		define([], " + amdFactory + ");\n") +
 						(this.names.root || this.names.commonjs
 							? getAuxilaryComment("commonjs") +
 							  "	else if(typeof exports === 'object')\n" +

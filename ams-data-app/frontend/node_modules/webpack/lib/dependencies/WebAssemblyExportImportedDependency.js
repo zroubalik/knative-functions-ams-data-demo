@@ -8,14 +8,12 @@ const DependencyReference = require("./DependencyReference");
 const ModuleDependency = require("./ModuleDependency");
 
 class WebAssemblyExportImportedDependency extends ModuleDependency {
-	constructor(exportName, request, name, valueType) {
+	constructor(exportName, request, name) {
 		super(request);
 		/** @type {string} */
 		this.exportName = exportName;
 		/** @type {string} */
 		this.name = name;
-		/** @type {string} */
-		this.valueType = valueType;
 	}
 
 	getReference() {

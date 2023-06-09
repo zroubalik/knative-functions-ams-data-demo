@@ -380,12 +380,13 @@ function webpackContext(req) {
 	${returnModuleObject}
 }
 function webpackContextResolve(req) {
-	if(!__webpack_require__.o(map, req)) {
+	var id = map[req];
+	if(!(id + 1)) { // check for number or string
 		var e = new Error("Cannot find module '" + req + "'");
 		e.code = 'MODULE_NOT_FOUND';
 		throw e;
 	}
-	return map[req];
+	return id;
 }
 webpackContext.keys = function webpackContextKeys() {
 	return Object.keys(map);
@@ -413,12 +414,13 @@ function webpackContext(req) {
 	${returnModuleObject}
 }
 function webpackContextResolve(req) {
-	if(!__webpack_require__.o(map, req)) {
+	var id = map[req];
+	if(!(id + 1)) { // check for number or string
 		var e = new Error("Cannot find module '" + req + "'");
 		e.code = 'MODULE_NOT_FOUND';
 		throw e;
 	}
-	return map[req];
+	return id;
 }
 webpackContext.keys = function webpackContextKeys() {
 	return Object.keys(map);
@@ -450,12 +452,13 @@ function webpackAsyncContextResolve(req) {
 	// Here Promise.resolve().then() is used instead of new Promise() to prevent
 	// uncaught exception popping up in devtools
 	return Promise.resolve().then(function() {
-		if(!__webpack_require__.o(map, req)) {
+		var id = map[req];
+		if(!(id + 1)) { // check for number or string
 			var e = new Error("Cannot find module '" + req + "'");
 			e.code = 'MODULE_NOT_FOUND';
 			throw e;
 		}
-		return map[req];
+		return id;
 	});
 }
 webpackAsyncContext.keys = function webpackAsyncContextKeys() {
@@ -485,12 +488,13 @@ function webpackAsyncContextResolve(req) {
 	// Here Promise.resolve().then() is used instead of new Promise() to prevent
 	// uncaught exception popping up in devtools
 	return Promise.resolve().then(function() {
-		if(!__webpack_require__.o(map, req)) {
+		var id = map[req];
+		if(!(id + 1)) { // check for number or string
 			var e = new Error("Cannot find module '" + req + "'");
 			e.code = 'MODULE_NOT_FOUND';
 			throw e;
 		}
-		return map[req];
+		return id;
 	});
 }
 webpackAsyncContext.keys = function webpackAsyncContextKeys() {
@@ -523,12 +527,13 @@ function webpackAsyncContext(req) {
 }
 function webpackAsyncContextResolve(req) {
 	return ${promise}.then(function() {
-		if(!__webpack_require__.o(map, req)) {
+		var id = map[req];
+		if(!(id + 1)) { // check for number or string
 			var e = new Error("Cannot find module '" + req + "'");
 			e.code = 'MODULE_NOT_FOUND';
 			throw e;
 		}
-		return map[req];
+		return id;
 	});
 }
 webpackAsyncContext.keys = function webpackAsyncContextKeys() {
@@ -541,92 +546,59 @@ module.exports = webpackAsyncContext;`;
 
 	getLazySource(blocks, id) {
 		let hasMultipleOrNoChunks = false;
-		let hasNoChunk = true;
 		const fakeMap = this.getFakeMap(blocks.map(b => b.dependencies[0]));
-		const hasFakeMap = typeof fakeMap === "object";
 		const map = blocks
 			.filter(block => block.dependencies[0].module)
-			.map(block => {
-				const chunks = block.chunkGroup ? block.chunkGroup.chunks : [];
-				if (chunks.length > 0) {
-					hasNoChunk = false;
-				}
-				if (chunks.length !== 1) {
-					hasMultipleOrNoChunks = true;
-				}
-				return {
-					dependency: block.dependencies[0],
-					block: block,
-					userRequest: block.dependencies[0].userRequest,
-					chunks
-				};
-			})
+			.map(block => ({
+				dependency: block.dependencies[0],
+				block: block,
+				userRequest: block.dependencies[0].userRequest
+			}))
 			.sort((a, b) => {
 				if (a.userRequest === b.userRequest) return 0;
 				return a.userRequest < b.userRequest ? -1 : 1;
 			})
 			.reduce((map, item) => {
-				const chunks = item.chunks;
-
-				if (hasNoChunk && !hasFakeMap) {
-					map[item.userRequest] = item.dependency.module.id;
-				} else {
-					const arrayStart = [item.dependency.module.id];
-					if (typeof fakeMap === "object") {
-						arrayStart.push(fakeMap[item.dependency.module.id]);
-					}
-					map[item.userRequest] = arrayStart.concat(
-						chunks.map(chunk => chunk.id)
-					);
+				const chunks =
+					(item.block.chunkGroup && item.block.chunkGroup.chunks) || [];
+				if (chunks.length !== 1) {
+					hasMultipleOrNoChunks = true;
 				}
+				const arrayStart = [item.dependency.module.id];
+				if (typeof fakeMap === "object") {
+					arrayStart.push(fakeMap[item.dependency.module.id]);
+				}
+				map[item.userRequest] = arrayStart.concat(
+					chunks.map(chunk => chunk.id)
+				);
 
 				return map;
 			}, Object.create(null));
 
-		const shortMode = hasNoChunk && !hasFakeMap;
-		const chunksStartPosition = hasFakeMap ? 2 : 1;
-		const requestPrefix = hasNoChunk
-			? "Promise.resolve()"
-			: hasMultipleOrNoChunks
+		const chunksStartPosition = typeof fakeMap === "object" ? 2 : 1;
+		const requestPrefix = hasMultipleOrNoChunks
 			? `Promise.all(ids.slice(${chunksStartPosition}).map(__webpack_require__.e))`
 			: `__webpack_require__.e(ids[${chunksStartPosition}])`;
 		const returnModuleObject = this.getReturnModuleObjectSource(
 			fakeMap,
-			shortMode ? "invalid" : "ids[1]"
+			"ids[1]"
 		);
 
-		const webpackAsyncContext =
-			requestPrefix === "Promise.resolve()"
-				? `${shortMode ? "" : ""}
+		return `var map = ${JSON.stringify(map, null, "\t")};
 function webpackAsyncContext(req) {
-	return Promise.resolve().then(function() {
-		if(!__webpack_require__.o(map, req)) {
-			var e = new Error("Cannot find module '" + req + "'");
-			e.code = 'MODULE_NOT_FOUND';
-			throw e;
-		}
-
-		${shortMode ? "var id = map[req];" : "var ids = map[req], id = ids[0];"}
-		${returnModuleObject}
-	});
-}`
-				: `function webpackAsyncContext(req) {
-	if(!__webpack_require__.o(map, req)) {
+	var ids = map[req];
+	if(!ids) {
 		return Promise.resolve().then(function() {
 			var e = new Error("Cannot find module '" + req + "'");
 			e.code = 'MODULE_NOT_FOUND';
 			throw e;
 		});
 	}
-
-	var ids = map[req], id = ids[0];
 	return ${requestPrefix}.then(function() {
+		var id = ids[0];
 		${returnModuleObject}
 	});
-}`;
-
-		return `var map = ${JSON.stringify(map, null, "\t")};
-${webpackAsyncContext}
+}
 webpackAsyncContext.keys = function webpackAsyncContextKeys() {
 	return Object.keys(map);
 };

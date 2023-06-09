@@ -10,14 +10,13 @@ const MultiModuleFactory = require("./MultiModuleFactory");
 const MultiEntryPlugin = require("./MultiEntryPlugin");
 const SingleEntryPlugin = require("./SingleEntryPlugin");
 
-/** @typedef {import("../declarations/WebpackOptions").EntryDynamic} EntryDynamic */
-/** @typedef {import("../declarations/WebpackOptions").EntryStatic} EntryStatic */
 /** @typedef {import("./Compiler")} Compiler */
+/** @typedef {import("./Compiler").EntryOptionValuesFunction} EntryOptionValuesFunction */
 
 class DynamicEntryPlugin {
 	/**
 	 * @param {string} context the context path
-	 * @param {EntryDynamic} entry the entry value
+	 * @param {EntryOptionValuesFunction} entry the entry value
 	 */
 	constructor(context, entry) {
 		this.context = context;
@@ -51,7 +50,7 @@ class DynamicEntryPlugin {
 				/**
 				 * @param {string|string[]} entry entry value or array of entry values
 				 * @param {string} name name of entry
-				 * @returns {Promise<EntryStatic>} returns the promise resolving the Compilation#addEntry function
+				 * @returns {Promise<any>} returns the promise resolving the Compilation#addEntry function
 				 */
 				const addEntry = (entry, name) => {
 					const dep = DynamicEntryPlugin.createDependency(entry, name);

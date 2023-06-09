@@ -67,11 +67,7 @@ class LibManifestPlugin {
 									return obj;
 								}, Object.create(null))
 						};
-						// Apply formatting to content if format flag is true;
-						const manifestContent = this.options.format
-							? JSON.stringify(manifest, null, 2)
-							: JSON.stringify(manifest);
-						const content = Buffer.from(manifestContent, "utf8");
+						const content = Buffer.from(JSON.stringify(manifest), "utf8");
 						compiler.outputFileSystem.mkdirp(path.dirname(targetPath), err => {
 							if (err) return callback(err);
 							compiler.outputFileSystem.writeFile(

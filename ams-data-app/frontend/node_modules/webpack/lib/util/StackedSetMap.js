@@ -96,10 +96,12 @@ class StackedSetMap {
 
 	asPairArray() {
 		this._compress();
-		return Array.from(this.map.entries(), pair =>
-			/** @type {[TODO, TODO]} */ (pair[1] === UNDEFINED_MARKER
-				? [pair[0], undefined]
-				: pair)
+		return Array.from(
+			this.map.entries(),
+			pair =>
+				/** @type {[TODO, TODO]} */ (pair[1] === UNDEFINED_MARKER
+					? [pair[0], undefined]
+					: pair)
 		);
 	}
 

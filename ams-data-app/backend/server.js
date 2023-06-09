@@ -6,12 +6,12 @@ app.use(cors());
 
 const httpServer = require('http').Server(app);
 const io = require('socket.io')(httpServer, {
-  cors: cors()
-  // cors: {
-  //   origin: "*",
-  //   methods: ["PUT", "GET", "POST", "DELETE", "OPTIONS"],
-  //   credentials: false
-  // }
+//  cors: cors()
+  cors: {
+    origin: "*",
+    methods: ["PUT", "GET", "POST", "DELETE", "OPTIONS"],
+    credentials: false
+  }
 });
 
 

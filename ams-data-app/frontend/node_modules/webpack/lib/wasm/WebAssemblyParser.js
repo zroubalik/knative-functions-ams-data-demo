@@ -108,8 +108,7 @@ class WebAssemblyParser extends Tapable {
 						const dep = new WebAssemblyExportImportedDependency(
 							node.name,
 							refNode.module,
-							refNode.name,
-							refNode.descr.valtype
+							refNode.name
 						);
 
 						state.module.addDependency(dep);

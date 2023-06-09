@@ -34,10 +34,7 @@ HarmonyAcceptDependency.Template = class HarmonyAcceptDependencyTemplate {
 				dep.range[0],
 				`function(__WEBPACK_OUTDATED_DEPENDENCIES__) { ${content}(`
 			);
-			source.insert(
-				dep.range[1],
-				")(__WEBPACK_OUTDATED_DEPENDENCIES__); }.bind(this)"
-			);
+			source.insert(dep.range[1], ")(__WEBPACK_OUTDATED_DEPENDENCIES__); }");
 			return;
 		}
 
